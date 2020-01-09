@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <Durin/CmdLine/CmdLine.hpp>
+#include <Durin/Hash/Hash.hpp>
 
 #include <Commands.hpp>
 #include <Task/HttpServer.hpp>
@@ -11,6 +12,29 @@ namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
 namespace Knock {
+
+Durin::CmdLine::TaskResult
+onHashFile( Durin::CmdLine::CmdLineContext& cmdLine )
+{
+    static const char* funcName( "onHashFile" );
+
+    using namespace Durin::CmdLine;
+
+    if ( !cmdLine.has( Knock::HashFileCmd ) ) {
+        return TaskResult::Continue;
+    }
+
+    if ( !cmdLine.has( InputCmd ) ) {
+        std::cout << "[Knock] please specify input via --input=xxx\n";
+        return TaskResult::Failed;
+    }
+
+    std::string digest = Durin::Hash::fileSha256(
+        cmdLine.getOptionValue<std::string>( InputCmd, "" ) );
+    std::cout << "SHA256: " << digest << std::endl;
+
+    return TaskResult::Done;
+}
 
 Durin::CmdLine::TaskResult
 onHttpServer( Durin::CmdLine::CmdLineContext& cmdLine )
@@ -62,8 +86,12 @@ int main( int argc, char* argv[] )
               po::value<std::string>(),
               "Used with other command to specify the output file/directory/..." )
 
+            ( Knock::HashFileCmd, 
+              "Calculate the file hash.\n"
+              "--hash.file --input=file" )
             ( Knock::HttpServerCmd,
-              "Run a HTTP Server" )
+              "Run a HTTP Server.\n"
+              "--http.server --ip=0.0.0.0 --port=8080 --input=doc-root" )
 
             ( IpCmd,
               po::value<std::string>(),
@@ -90,6 +118,7 @@ int main( int argc, char* argv[] )
             const char* cmd;
             CmdHandler  handler;
         } table[] = {
+            { Knock::HashFileCmd,   &onHashFile },
             { Knock::HttpServerCmd, &onHttpServer }
         };
 
