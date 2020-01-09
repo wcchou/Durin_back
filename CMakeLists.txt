@@ -14,5 +14,6 @@ if (NOT DEFINED LOCAL_INCLUDE)
 endif()
 
 add_subdirectory(Durin)
+add_subdirectory(CmdLine)
 add_subdirectory(test)
 add_subdirectory(Knock)
