@@ -7,62 +7,94 @@
 
 #include <Commands.hpp>
 #include <Task/HttpServer.hpp>
+#include <Task/FileGenerator.hpp>
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
 namespace Knock {
 
-Durin::CmdLine::TaskResult
-onHashFile( Durin::CmdLine::CmdLineContext& cmdLine )
+/*!
+ * \par Usage
+ *      --generate.file --size=10mb --count=10 [--output=output]
+ */
+Durin::CmdLine::TaskResult onGenerateFile( Durin::CmdLine::CmdLineContext& cmdLine )
+{
+    static const char* funcName( "onGenerateFile" );
+
+    using namespace std;
+    using namespace Durin;
+
+    if ( !cmdLine.has( Knock::GenerateFileCmd ) ) {
+        return CmdLine::TaskResult::Continue;
+    }
+
+    size_t fileSize = 0;
+    if ( !cmdLine.getFileSize( fileSize ) ) {
+        cout << "[" << Knock::GenerateFileCmd
+             << "] usage: --generate.file --size=10mb --count10 [--output=output]"
+             << endl;
+        return CmdLine::TaskResult::Failed;
+    }
+
+    fs::path outDir = cmdLine.getOutputPath();
+    Knock::FileGenerator generator;
+    generator.generateFiles(
+        outDir,
+        cmdLine.getOptionValue( CmdLine::CountCmd, 1 ),
+        fileSize );
+
+    return CmdLine::TaskResult::Done;
+}
+
+Durin::CmdLine::TaskResult onHashFile( Durin::CmdLine::CmdLineContext& cmdLine )
 {
     static const char* funcName( "onHashFile" );
 
-    using namespace Durin::CmdLine;
+    using namespace Durin;
 
     if ( !cmdLine.has( Knock::HashFileCmd ) ) {
-        return TaskResult::Continue;
+        return CmdLine::TaskResult::Continue;
     }
 
-    if ( !cmdLine.has( InputCmd ) ) {
+    if ( !cmdLine.has( CmdLine::InputCmd ) ) {
         std::cout << "[Knock] please specify input via --input=xxx\n";
-        return TaskResult::Failed;
+        return CmdLine::TaskResult::Failed;
     }
 
     std::string digest = Durin::Hash::fileSha256(
-        cmdLine.getOptionValue<std::string>( InputCmd, "" ) );
+        cmdLine.getOptionValue<std::string>( CmdLine::InputCmd, "" ) );
     std::cout << "SHA256: " << digest << std::endl;
 
-    return TaskResult::Done;
+    return CmdLine::TaskResult::Done;
 }
 
-Durin::CmdLine::TaskResult
-onHttpServer( Durin::CmdLine::CmdLineContext& cmdLine )
+Durin::CmdLine::TaskResult onHttpServer( Durin::CmdLine::CmdLineContext& cmdLine )
 {
-    using namespace Durin::CmdLine;
+    using namespace Durin;
 
     if ( !cmdLine.has( HttpServerCmd ) ) {
-        return TaskResult::Continue;
+        return CmdLine::TaskResult::Continue;
     }
 
     HttpServer  server;
     if ( !server.init(
-            cmdLine.getOptionValue<std::string>( IpCmd, "0.0.0.0" ),
-            cmdLine.getOptionValue<std::string>( PortCmd, "8080" ),
-            cmdLine.getOptionValue<std::string>( InputCmd, "." ) ) ) {
-        return TaskResult::Failed;
+            cmdLine.getOptionValue<std::string>( CmdLine::IpCmd, "0.0.0.0" ),
+            cmdLine.getOptionValue<std::string>( CmdLine::PortCmd, "8080" ),
+            cmdLine.getOptionValue<std::string>( CmdLine::InputCmd, "." ) ) ) {
+        return CmdLine::TaskResult::Failed;
     }
 
     std::cout << "Start http server: " << server.address().to_string() << ":" << server.port()
               << std::endl;
 
     if ( !server.start() ) {
-        return TaskResult::Failed;
+        return CmdLine::TaskResult::Failed;
     }
 
     server.wait();
 
-    return TaskResult::Done;
+    return CmdLine::TaskResult::Done;
 }
 
 } // Knock namespace
@@ -86,6 +118,9 @@ int main( int argc, char* argv[] )
               po::value<std::string>(),
               "Used with other command to specify the output file/directory/..." )
 
+            ( Knock::GenerateFileCmd,
+              "Generate file(s) with random content.\n"
+              "--generate.file --count=10 --size=10MB|KB|GB [--output=output]" )
             ( Knock::HashFileCmd, 
               "Calculate the file hash.\n"
               "--hash.file --input=file" )

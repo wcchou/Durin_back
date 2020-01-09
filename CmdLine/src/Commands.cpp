@@ -13,6 +13,7 @@ const char* ConfigCmd{ "config" };
 const char* InputCmd{ "input" };
 const char* OutputCmd{ "output" };
 const char* SizeCmd{ "size" };
+const char* CountCmd{ "count" };
 
 const char* IpCmd{ "ip" };
 const char* PortCmd{ "port" };
