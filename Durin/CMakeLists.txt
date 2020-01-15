@@ -8,6 +8,7 @@ set(export_folder ${PROJECT_SOURCE_DIR}/Durin/Durin)
 set(header_files ${export_folder}/Config/Config.hpp
                  ${export_folder}/Type/BasicTypes.hpp
                  ${export_folder}/System/ErrorCode.hpp
+                 ${export_folder}/String/String.hpp
                  ${export_folder}/Hash/Hash.hpp
                  ${include_folder}/Config/Export.hpp)
 
@@ -18,6 +19,7 @@ else()
 endif()
 
 set(src_files ${src_folder}/System/ErrorCode.cpp
+              ${src_folder}/String/String.cpp
               ${src_folder}/Hash/Hash.cpp)
 
 add_library(durin STATIC ${src_files} ${header_files})
