@@ -3,6 +3,8 @@
 
 #include <Durin/Config/Config.hpp>
 
+#include <vector>
+
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
@@ -17,7 +19,7 @@ enum class TaskResult {
     Continue
 };
 
-class CmdLineContext {
+class DURIN_EXPORT CmdLineContext {
 public:
     explicit
     CmdLineContext( boost::program_options::variables_map& vm )
@@ -42,6 +44,10 @@ public:
 
         return pos->second.as<T>();
     }
+
+    std::vector<std::string> getOptionValues(
+        const char* optionName,
+        const char* delimiter );
 
     boost::filesystem::path getConfigFilePath();
 

@@ -8,7 +8,8 @@ set(export_folder ${PROJECT_SOURCE_DIR}/CmdLine/Durin/CmdLine)
 set(header_files ${export_folder}/Commands.hpp
                  ${export_folder}/CmdLine.hpp)
 
-set(src_files ${src_folder}/Commands.cpp)
+set(src_files ${src_folder}/Commands.cpp
+              ${src_folder}/CmdLine.cpp )
 
 add_library(durin_cmdline STATIC ${src_files} ${header_files})
 
@@ -20,4 +21,5 @@ target_link_libraries(
 
 target_include_directories(
     durin_cmdline PUBLIC ${PROJECT_SOURCE_DIR}/CmdLine
-                         ${LOCAL_INCLUDE}/boost-1_70)
+                         ${LOCAL_INCLUDE}/boost-1_70
+                  PRIVATE ${PROJECT_SOURCE_DIR}/Durin )
