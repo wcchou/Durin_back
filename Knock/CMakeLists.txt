@@ -7,12 +7,14 @@ set(include_folder ${PROJECT_SOURCE_DIR}/Knock/include)
 set(header_files ${include_folder}/Config/Config.hpp
                  ${include_folder}/Commands.hpp
                  ${include_folder}/Task/HttpServer.hpp
-                 ${include_folder}/Task/FileGenerator.hpp)
+                 ${include_folder}/Task/FileGenerator.hpp
+                 ${include_folder}/Task/ProcessUtil.hpp)
 
 set(src_files ${src_folder}/MainEntry.cpp
               ${src_folder}/Commands.cpp
               ${src_folder}/Task/HttpServer.cpp
-              ${src_folder}/Task/FileGenerator.cpp)
+              ${src_folder}/Task/FileGenerator.cpp
+              ${src_folder}/Task/ProcessUtil.cpp)
 
 add_executable(knock ${src_files} ${header_files})
 

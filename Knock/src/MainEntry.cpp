@@ -8,6 +8,7 @@
 #include <Commands.hpp>
 #include <Task/HttpServer.hpp>
 #include <Task/FileGenerator.hpp>
+#include <Task/ProcessUtil.hpp>
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -97,6 +98,27 @@ Durin::CmdLine::TaskResult onHttpServer( Durin::CmdLine::CmdLineContext& cmdLine
     return CmdLine::TaskResult::Done;
 }
 
+Durin::CmdLine::TaskResult onProcessList( Durin::CmdLine::CmdLineContext& cmdLine )
+{
+    using namespace Durin;
+
+    if ( !cmdLine.has( ProcessListCmd ) ) {
+        return CmdLine::TaskResult::Continue;
+    }
+
+    ProcessFinder finder;
+    ProcessFinder::ProcessListT processList = finder.query();
+
+    std::vector<std::string>    fields;
+    if ( cmdLine.has( Knock::OutputFieldCmd ) ) {
+        fields = cmdLine.getOptionValues( Knock::OutputFieldCmd, ";," );
+    }
+
+    show( processList, fields );
+
+    return CmdLine::TaskResult::Done;
+}
+
 } // Knock namespace
 
 int main( int argc, char* argv[] )
@@ -127,13 +149,20 @@ int main( int argc, char* argv[] )
             ( Knock::HttpServerCmd,
               "Run a HTTP Server.\n"
               "--http.server --ip=0.0.0.0 --port=8080 --input=doc-root" )
+            ( Knock::ProcessListCmd,
+              "List running process\n"
+              "--process.list --output.field=name,cmdline,seccomp" )
 
             ( IpCmd,
               po::value<std::string>(),
               "Used with other commands to specify address" )
             ( PortCmd,
               po::value<std::string>(),
-              "Used with other commands to specify port" );
+              "Used with other commands to specify port" )
+
+            ( OutputFieldCmd,
+              po::value<std::string>(),
+              "Used with other command to specify output field" );
 
         if ( 1 == argc ) {
             cout << desc << endl;
@@ -153,8 +182,9 @@ int main( int argc, char* argv[] )
             const char* cmd;
             CmdHandler  handler;
         } table[] = {
-            { Knock::HashFileCmd,   &onHashFile },
-            { Knock::HttpServerCmd, &onHttpServer }
+            { Knock::HashFileCmd,    &onHashFile },
+            { Knock::HttpServerCmd,  &onHttpServer },
+            { Knock::ProcessListCmd, &onProcessList }
         };
 
         Durin::CmdLine::CmdLineContext   cmdLine( vm );
