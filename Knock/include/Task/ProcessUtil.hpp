@@ -9,10 +9,10 @@
 namespace Knock {
 
 struct ProcessInfo {
-    std::string pid{ 0 };
-    std::string name;
-    std::string cmdLine;
-    int         seccomp{ 0 };
+    std::string                 pid{ 0 };
+    std::string                 name;
+    std::vector<std::string>    cmdLine;
+    int                         seccomp{ 0 };
 };
 
 class ProcessFinder {
@@ -22,7 +22,10 @@ public:
     static ProcessListT query();
 };
 
-void show( const ProcessFinder::ProcessListT& processes, const std::vector<std::string>& fields );
+void show(
+    const ProcessFinder::ProcessListT& processes,
+    const std::vector<std::string>& filters,
+    const std::vector<std::string>& fields );
 
 } // namespace Knock
 

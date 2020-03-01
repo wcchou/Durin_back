@@ -13,6 +13,8 @@ DURIN_EXPORT extern const char* InputCmd;
 DURIN_EXPORT extern const char* OutputCmd;
 DURIN_EXPORT extern const char* SizeCmd;
 DURIN_EXPORT extern const char* CountCmd;
+DURIN_EXPORT extern const char* ModeCmd;
+DURIN_EXPORT extern const char* FilterCmd;
 
 DURIN_EXPORT extern const char* IpCmd;
 DURIN_EXPORT extern const char* PortCmd;

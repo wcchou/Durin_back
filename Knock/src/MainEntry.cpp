@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <boost/date_time.hpp>
+
 #include <Durin/CmdLine/CmdLine.hpp>
 #include <Durin/Hash/Hash.hpp>
 
@@ -98,6 +100,10 @@ Durin::CmdLine::TaskResult onHttpServer( Durin::CmdLine::CmdLineContext& cmdLine
     return CmdLine::TaskResult::Done;
 }
 
+/*!
+ * \par Usage
+ *      --process.list [--output.field=name,cmdline,seccomp] [--filter=process_name] [--mode=snapshot|monitor]
+ */
 Durin::CmdLine::TaskResult onProcessList( Durin::CmdLine::CmdLineContext& cmdLine )
 {
     using namespace Durin;
@@ -106,15 +112,32 @@ Durin::CmdLine::TaskResult onProcessList( Durin::CmdLine::CmdLineContext& cmdLin
         return CmdLine::TaskResult::Continue;
     }
 
-    ProcessFinder finder;
-    ProcessFinder::ProcessListT processList = finder.query();
-
     std::vector<std::string>    fields;
     if ( cmdLine.has( Knock::OutputFieldCmd ) ) {
         fields = cmdLine.getOptionValues( Knock::OutputFieldCmd, ";," );
     }
 
-    show( processList, fields );
+    std::vector<std::string>    filters = 
+    cmdLine.getOptionValues( CmdLine::FilterCmd, ";," );
+
+    std::string repeat = cmdLine.getOptionValue<std::string>( CmdLine::ModeCmd, "snapshot" );
+
+    if ( "monitor" == repeat ) {
+        while ( true ) {
+            boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+
+            std::cout << "=========================== " << now << " ===========================\n";
+            ProcessFinder finder;
+            ProcessFinder::ProcessListT processList = finder.query();
+            show( processList, filters, fields );
+            ::sleep( 3 );
+        }
+    }
+    else {
+        ProcessFinder finder;
+        ProcessFinder::ProcessListT processList = finder.query();
+        show( processList, filters, fields );
+    }
 
     return CmdLine::TaskResult::Done;
 }
@@ -138,7 +161,13 @@ int main( int argc, char* argv[] )
               "Used with other commands to specify the input" )
             ( OutputCmd,
               po::value<std::string>(),
-              "Used with other command to specify the output file/directory/..." )
+              "Used with other commands to specify the output file/directory/..." )
+            ( ModeCmd,
+              po::value<std::string>(),
+              "Used with other commands to specify mode" )
+            ( FilterCmd,
+              po::value<std::string>(),
+              "Used with other commands to specify filter" )
 
             ( Knock::GenerateFileCmd,
               "Generate file(s) with random content.\n"
@@ -150,8 +179,11 @@ int main( int argc, char* argv[] )
               "Run a HTTP Server.\n"
               "--http.server --ip=0.0.0.0 --port=8080 --input=doc-root" )
             ( Knock::ProcessListCmd,
-              "List running process\n"
-              "--process.list --output.field=name,cmdline,seccomp" )
+              "List running process.\n"
+              "--process.list [--output.field=name,cmdline,seccomp] [--filter=process-name] [--mode=snapshot|monitor]\n"
+              "--output.field=name[,cmdline[,seccmp]]: process info to be dumped\n"
+              "--filter=process-name: fitler process by starts-with-name\n"
+              "--mode=snapshot|monitor: just one shot or list process periodically" )
 
             ( IpCmd,
               po::value<std::string>(),

@@ -5,12 +5,13 @@
 #include <iostream>
 #include <utility>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <functional>
 #include <string_view>
 
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <Durin/String/String.hpp>
 
@@ -67,6 +68,22 @@ Knock::ProcessInfo getProcessInfo( const boost::filesystem::path& path )
             proc.seccomp = boost::lexical_cast<int>( status[ 1 ] );
         }
     }
+    in.close();
+
+    in.open( (path / "cmdline").string(), ios::in );
+    if ( in ) {
+        std::string oneLineValues;
+        getline( in, oneLineValues );
+
+        // std::istringstream iss( oneLineValues );
+        // while ( iss ) {
+        //     std::string value;
+        //     iss >> value;
+        //     proc.cmdLine.push_back( value );
+        // }
+        boost::algorithm::split( proc.cmdLine, oneLineValues, boost::is_cntrl() );
+    }
+    proc.cmdLine.pop_back();
 
     return proc;
 }
@@ -96,9 +113,12 @@ std::vector<ProcessInfo> ProcessFinder::query()
     return processes;
 }
 
-void show( const ProcessFinder::ProcessListT& processes, const std::vector<std::string>& fields )
+void show(
+    const ProcessFinder::ProcessListT& processes,
+    const std::vector<std::string>& filters,
+    const std::vector<std::string>& fields )
 {
-    using DumpTableT = std::map<std::string, std::function<void (const ProcessInfo&)>>;
+    using DumpTableT = std::unordered_map<std::string, std::function<void (const ProcessInfo&)>>;
     DumpTableT dumpTable{
         { "seccomp", []( const ProcessInfo& info ) {
                          switch (info.seccomp) {
@@ -107,21 +127,40 @@ void show( const ProcessFinder::ProcessListT& processes, const std::vector<std::
                              case 2: { std::cout << "filter"; } break;
                              default: { std:: cout << "unknown"; }
                          }
+                     } },
+        { "cmdline", []( const ProcessInfo& info ) {
+                         if ( info.cmdLine.empty() ) {
+                             return;
+                         }
+
+                         std::cout << info.cmdLine[ 0 ];
+                         for ( size_t i = 1; i < info.cmdLine.size(); ++i ) {
+                             std::cout << " " << info.cmdLine[ i ];
+                         }
                      } }
     };
 
     for ( const auto& process : processes ) {
+        bool matched = false;
+        for ( auto iter = filters.begin(); !matched && iter != filters.end(); ++iter ) {
+            matched = boost::algorithm::starts_with( process.name, *iter );
+        }
+
+        if ( !matched ) {
+            continue;
+        }
+
         std::cout << process.pid << " " << process.name;
 
         for ( const auto& field : fields ) {
             DumpTableT::const_iterator dumpFunction = dumpTable.find( field );
-            if (  dumpTable.end() != dumpFunction ) {
+            if ( dumpTable.end() != dumpFunction ) {
                 std::cout << " ";
                 dumpFunction->second( process );
             }
-
-            std::cout << std::endl;
         }
+
+        std::cout << std::endl;
     }
 }
 
