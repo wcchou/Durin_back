@@ -3,10 +3,9 @@
 
 #include <Durin/Config/Config.hpp>
 
-#ifdef DURIN_OS_WINDOWS
-    #define DURIN_EXPORT __declspec(export)
-#else
-    #define DURIN_EXPORT
+#if defined(DURIN_OS_WINDOWS) && defined(DURIN_BUILD_DLL)
+    #undef DURIN_EXPORT
+    #define DURIN_EXPORT __declspec(dllexport)
 #endif
 
 #endif // End of include guard
