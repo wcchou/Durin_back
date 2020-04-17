@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Durin">
+      <UniqueIdentifier>{b411dd87-376e-4038-953f-90dbc2eec96b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Durin\Config">
+      <UniqueIdentifier>{30774308-7d20-4bd3-8581-0534773a60a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Durin\Type">
+      <UniqueIdentifier>{6b063d0d-0a1c-49a8-9611-d376be869460}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Durin\System">
+      <UniqueIdentifier>{d6a67f3f-5925-4f79-9e6a-502641210217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Durin\Scoped">
+      <UniqueIdentifier>{696af7d0-af4f-41cb-9221-ce855a19990e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Durin\String">
+      <UniqueIdentifier>{6d35fb0e-f5df-408e-adeb-914af0d1449c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\include">
+      <UniqueIdentifier>{cff855fb-05ce-4caf-bd1e-10210bcbccf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\include\Durin">
+      <UniqueIdentifier>{0f7b68ff-7c5c-4f7c-ad0f-f613c115f42c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\include\Durin\Config">
+      <UniqueIdentifier>{e788d496-6098-4257-ac48-0fa51bef1d22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\String">
+      <UniqueIdentifier>{4e2b396c-7d98-4902-9da5-65b6465c7b0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System">
+      <UniqueIdentifier>{373f26b6-9d4c-4eda-a72b-5fbed6ede42b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Type">
+      <UniqueIdentifier>{348b8c1d-2379-4050-aa1f-1273cfb0495f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Durin\Durin\Config\Config.hpp">
+      <Filter>Header Files\Durin\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\Durin\Type\FileDescriptor.hpp">
+      <Filter>Header Files\Durin\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\Durin\Type\BasicTypes.hpp">
+      <Filter>Header Files\Durin\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\Durin\Type\BasicTypesPosix.hpp">
+      <Filter>Header Files\Durin\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\Durin\Type\BasicTypesWin32.hpp">
+      <Filter>Header Files\Durin\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\Durin\System\ErrorCode.hpp">
+      <Filter>Header Files\Durin\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\Durin\Scoped\BasicScoped.hpp">
+      <Filter>Header Files\Durin\Scoped</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\Durin\Scoped\ScopedFileDescriptor.hpp">
+      <Filter>Header Files\Durin\Scoped</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\Durin\String\String.hpp">
+      <Filter>Header Files\Durin\String</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Durin\include\Durin\Config\Export.hpp">
+      <Filter>Header Files\include\Durin\Config</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Durin\src\String\String.cpp">
+      <Filter>Source Files\String</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Durin\src\System\ErrorCode.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Durin\src\Type\FileDescriptor.cpp">
+      <Filter>Source Files\Type</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
