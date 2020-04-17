@@ -9,7 +9,7 @@
 
 namespace Durin {
 
-NativeErrorCode lastErrorCode()
+NativeErrorCode DURIN_CALL_STD lastErrorCode()
 {
 #ifdef DURIN_OS_WINDOWS
     return ::GetLastError();
